@@ -1,6 +1,27 @@
 const { useEffect, useMemo, useState } = React;
 
 const POSTS_DIR = "content/posts/";
+const TRANSLATION_LANGUAGES = [
+  { code: "", label: "Original" },
+  { code: "zh-CN", label: "Chinese" },
+  { code: "es", label: "Spanish" },
+  { code: "fr", label: "French" },
+  { code: "de", label: "German" },
+  { code: "ja", label: "Japanese" },
+  { code: "ko", label: "Korean" },
+  { code: "pt", label: "Portuguese" },
+  { code: "ar", label: "Arabic" },
+  { code: "hi", label: "Hindi" },
+];
+const GOOGLE_TRANSLATE_LANGUAGES = TRANSLATION_LANGUAGES
+  .map((language) => language.code)
+  .filter(Boolean)
+  .join(",");
+let translateScriptPromise = null;
+
+function wait(milliseconds) {
+  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+}
 
 function escapeHtml(value) {
   return value
@@ -226,10 +247,161 @@ function sortPostsByNewest(posts) {
   });
 }
 
+function idFromHash() {
+  return decodeURIComponent(location.hash.replace(/^#/, ""));
+}
+
+function updatePostHash(id) {
+  if (!id || idFromHash() === id) return;
+
+  history.replaceState(null, "", `#${encodeURIComponent(id)}`);
+}
+
+function clearGoogleTranslateCookie() {
+  const expired = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  document.cookie = expired;
+  document.cookie = `${expired};domain=${location.hostname}`;
+}
+
+function loadGoogleTranslateScript() {
+  if (window.google?.translate?.TranslateElement) {
+    return Promise.resolve();
+  }
+
+  if (translateScriptPromise) {
+    return translateScriptPromise;
+  }
+
+  translateScriptPromise = new Promise((resolve, reject) => {
+    window.initGoogleTranslate = function initGoogleTranslate() {
+      if (!window.google?.translate?.TranslateElement) {
+        reject(new Error("Google Translate did not initialize."));
+        return;
+      }
+
+      new window.google.translate.TranslateElement({
+        pageLanguage: "en",
+        includedLanguages: GOOGLE_TRANSLATE_LANGUAGES,
+        autoDisplay: false,
+      }, "google_translate_element");
+      resolve();
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://translate.google.com/translate_a/element.js?cb=initGoogleTranslate";
+    script.async = true;
+    script.onerror = () => reject(new Error("Google Translate could not be loaded."));
+    document.head.appendChild(script);
+  });
+
+  return translateScriptPromise;
+}
+
+async function waitForGoogleTranslateSelect() {
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const translateSelect = document.querySelector(".goog-te-combo");
+    if (translateSelect) return translateSelect;
+
+    await wait(150);
+  }
+
+  return null;
+}
+
+function dispatchSelectChange(select) {
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+
+  const legacyEvent = document.createEvent("HTMLEvents");
+  legacyEvent.initEvent("change", true, true);
+  select.dispatchEvent(legacyEvent);
+}
+
+function isPageTranslated() {
+  return document.documentElement.className.includes("translated");
+}
+
+function articleBodyText() {
+  return document.querySelector(".article-body")?.textContent || "";
+}
+
+function setGoogleTranslateLanguage(translateSelect, languageCode) {
+  translateSelect.value = languageCode;
+  dispatchSelectChange(translateSelect);
+}
+
+function resetPageTranslation(setTranslationStatus) {
+  clearGoogleTranslateCookie();
+  setTranslationStatus("");
+
+  if (document.documentElement.className.includes("translated")) {
+    location.reload();
+  }
+}
+
+async function requestPageTranslation(languageCode, setTranslationStatus) {
+  if (!languageCode) {
+    resetPageTranslation(setTranslationStatus);
+    return;
+  }
+
+  let attempts = 0;
+  const originalArticleText = articleBodyText();
+  setTranslationStatus("Translating...");
+
+  try {
+    await loadGoogleTranslateScript();
+  } catch {
+    setTranslationStatus("Translation unavailable");
+    return;
+  }
+
+  const translateSelect = await waitForGoogleTranslateSelect();
+  if (!translateSelect) {
+    setTranslationStatus("Translation unavailable");
+    return;
+  }
+
+  async function tryTranslate() {
+    setGoogleTranslateLanguage(translateSelect, languageCode);
+    await wait(700);
+
+    if (
+      isPageTranslated() &&
+      translateSelect.value === languageCode &&
+      articleBodyText() !== originalArticleText
+    ) {
+      setTranslationStatus("");
+      return;
+    }
+
+    attempts += 1;
+    if (attempts < 12) {
+      tryTranslate();
+      return;
+    }
+
+    setTranslationStatus(isPageTranslated() ? "" : "Translation unavailable");
+  }
+
+  tryTranslate();
+}
+
+function warmUpTranslator() {
+  const warmUp = () => {
+    loadGoogleTranslateScript()
+      .then(waitForGoogleTranslateSelect)
+      .catch(() => {});
+  };
+
+  window.setTimeout(warmUp, 0);
+}
+
 function App() {
   const [posts, setPosts] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [query, setQuery] = useState("");
+  const [translationLanguage, setTranslationLanguage] = useState("");
+  const [translationStatus, setTranslationStatus] = useState("");
   const [status, setStatus] = useState("Loading posts...");
 
   useEffect(() => {
@@ -241,8 +413,11 @@ function App() {
         if (ignore) return;
 
         const sortedPosts = sortPostsByNewest(loadedPosts);
+        const hashId = idFromHash();
+        const activePost = sortedPosts.find((post) => post.id === hashId) || sortedPosts[0];
+
         setPosts(sortedPosts);
-        setActiveId(sortedPosts[0]?.id || "");
+        setActiveId(activePost?.id || "");
         setStatus(sortedPosts.length > 0 ? "" : "No posts found.");
       })
       .catch(() => {
@@ -255,6 +430,26 @@ function App() {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    warmUpTranslator();
+  }, []);
+
+  useEffect(() => {
+    function handleHashChange() {
+      const hashId = idFromHash();
+      if (posts.some((post) => post.id === hashId)) {
+        setActiveId(hashId);
+      }
+    }
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [posts]);
+
+  useEffect(() => {
+    updatePostHash(activeId);
+  }, [activeId]);
 
   const activePost = posts.find((post) => post.id === activeId) || posts[0];
   const visiblePosts = useMemo(() => {
@@ -269,12 +464,12 @@ function App() {
 
   return (
     React.createElement(React.Fragment, null,
-      React.createElement("header", { className: "site-header" },
+      React.createElement("header", { className: "site-header notranslate", translate: "no" },
         React.createElement("a", { className: "brand", href: "index.html", "aria-label": "Personal Blog home" }, "Personal Blog"),
         React.createElement("p", null, "Essays, notes, and small lessons from building, reading, and paying attention.")
       ),
       React.createElement("main", { className: "reader-layout" },
-        React.createElement("aside", { className: "article-list", "aria-label": "Articles" },
+        React.createElement("aside", { className: "article-list notranslate", translate: "no", "aria-label": "Articles" },
           React.createElement("div", { className: "list-header" },
             React.createElement("h1", null, "Articles"),
             React.createElement("label", { className: "search-field" },
@@ -306,7 +501,33 @@ function App() {
         React.createElement("article", { className: "article-pane", "aria-live": "polite" },
           activePost
             ? React.createElement(React.Fragment, null,
-                React.createElement("p", { className: "article-meta" }, `${activePost.date} · ${activePost.category}`),
+                React.createElement("div", { className: "article-header-row" },
+                  React.createElement("p", { className: "article-meta notranslate", translate: "no" }, `${activePost.date} · ${activePost.category}`),
+                  React.createElement("div", { className: "translate-tools notranslate", translate: "no", "aria-label": "Translate article" },
+                    React.createElement("label", { className: "translation-select" },
+                      React.createElement("span", null, "Translate"),
+                      React.createElement("select", {
+                        value: translationLanguage,
+                        onChange: (event) => {
+                          const languageCode = event.target.value;
+                          setTranslationLanguage(languageCode);
+                          requestPageTranslation(languageCode, setTranslationStatus);
+                        },
+                      },
+                        TRANSLATION_LANGUAGES.map((language) => (
+                          React.createElement("option", { key: language.code, value: language.code }, language.label)
+                        ))
+                      )
+                    ),
+                    React.createElement("span", {
+                      className: `translation-status${translationStatus ? " active" : ""}`,
+                      "aria-live": "polite",
+                    },
+                      translationStatus && React.createElement("span", { className: "translation-spinner", "aria-hidden": "true" }),
+                      React.createElement("span", null, translationStatus)
+                    )
+                  )
+                ),
                 React.createElement("div", {
                   className: "article-body",
                   dangerouslySetInnerHTML: { __html: markdownToHtml(activePost.body) },
@@ -315,7 +536,7 @@ function App() {
             : React.createElement("p", { className: "status-message" }, status)
         )
       ),
-      React.createElement("footer", { className: "site-footer" },
+      React.createElement("footer", { className: "site-footer notranslate", translate: "no" },
         React.createElement("p", null, `© ${new Date().getFullYear()} Personal Blog`)
       )
     )

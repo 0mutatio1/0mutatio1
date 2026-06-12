@@ -21,6 +21,16 @@ body {
   line-height: 1.7;
 }
 
+html.translated-ltr body,
+html.translated-rtl body {
+  top: 0 !important;
+}
+
+.skiptranslate,
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
 .site-header,
 .reader-layout,
 .site-footer {
@@ -168,8 +178,88 @@ h4 {
   padding: 42px 0 56px 46px;
 }
 
+.article-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
 .article-meta {
-  margin: 0 0 12px;
+  margin: 0;
+}
+
+.translate-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.translation-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.translation-select select {
+  min-height: 34px;
+  max-width: 150px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+.translation-select select:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.translation-status {
+  display: inline-flex;
+  width: 0;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.translation-status.active {
+  width: auto;
+  opacity: 1;
+}
+
+.translation-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  flex: 0 0 auto;
+  animation: translation-spin 0.75s linear infinite;
+}
+
+@keyframes translation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.google-translate-element {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .article-body {
@@ -260,6 +350,13 @@ h4 {
   border-radius: 8px;
 }
 
+.article-body img[src="images/payment-shipping-address.png"] {
+  width: min(100%, 360px);
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .article-body hr {
   margin: 2em 0;
   border: 0;
@@ -308,6 +405,11 @@ h4 {
   .article-pane {
     padding: 34px 0 46px;
   }
+
+  .article-header-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 420px) {
@@ -315,5 +417,15 @@ h4 {
   .reader-layout,
   .site-footer {
     width: min(100% - 32px, var(--max));
+  }
+
+  .translate-tools,
+  .translation-select {
+    width: 100%;
+  }
+
+  .translation-select select {
+    flex: 1;
+    max-width: none;
   }
 }

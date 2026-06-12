@@ -114,6 +114,10 @@ The store will automatically switch to the US region. Now we need to trigger the
 
 ![Apple ID Billing Address](../../images/billing-address.webp)
 
+**New bill address setting page**
+
+![Payment and Shipping Billing Address](../../images/payment-shipping-address.png)
+
 4. Tap **Next**.
 
 That's it. You can now download apps from the US App Store.
