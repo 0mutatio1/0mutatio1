@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Check Apple ID</title>
+  <desc id="desc">Clean placeholder image for the App Store check prompt.</desc>
+  <rect width="1200" height="720" fill="#f7f7f3"/>
+  <rect x="220" y="130" width="760" height="460" rx="30" fill="#ffffff" stroke="#deded6" stroke-width="3"/>
+  <text x="600" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="50" font-weight="700" fill="#222222">Apple ID Check</text>
+  <text x="600" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" fill="#707070">This Apple ID has not been used in the iTunes Store yet.</text>
+  <rect x="410" y="386" width="380" height="66" rx="12" fill="#2f6f5e"/>
+  <text x="600" y="429" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#ffffff">Review Account</text>
+</svg>

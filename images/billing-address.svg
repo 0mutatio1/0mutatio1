@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Apple ID Billing Address</title>
+  <desc id="desc">Clean placeholder image for entering a US billing address.</desc>
+  <rect width="1200" height="720" fill="#f7f7f3"/>
+  <rect x="160" y="70" width="880" height="580" rx="28" fill="#ffffff" stroke="#deded6" stroke-width="3"/>
+  <text x="210" y="150" font-family="Georgia, serif" font-size="46" font-weight="700" fill="#222222">Billing Address</text>
+  <g fill="#fbfbf8" stroke="#e8e8e2">
+    <rect x="210" y="206" width="780" height="54" rx="8"/>
+    <rect x="210" y="286" width="780" height="54" rx="8"/>
+    <rect x="210" y="366" width="370" height="54" rx="8"/>
+    <rect x="620" y="366" width="370" height="54" rx="8"/>
+    <rect x="210" y="446" width="780" height="54" rx="8"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="22" fill="#707070">
+    <text x="236" y="240">Street</text>
+    <text x="236" y="320">City</text>
+    <text x="236" y="400">State</text>
+    <text x="646" y="400">Zip Code</text>
+    <text x="236" y="480">Phone</text>
+  </g>
+</svg>

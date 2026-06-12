@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">US Tax-Free Address Generator</title>
+  <desc id="desc">Clean placeholder image for choosing a US tax-free address.</desc>
+  <rect width="1200" height="720" fill="#f7f7f3"/>
+  <rect x="120" y="82" width="960" height="556" rx="28" fill="#ffffff" stroke="#deded6" stroke-width="3"/>
+  <text x="180" y="174" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#222222">US Address Generator</text>
+  <rect x="180" y="230" width="840" height="70" rx="10" fill="#f2f5f3"/>
+  <text x="212" y="274" font-family="Arial, sans-serif" font-size="26" fill="#2f6f5e">State: Oregon</text>
+  <rect x="180" y="330" width="840" height="70" rx="10" fill="#fbfbf8" stroke="#e8e8e2"/>
+  <text x="212" y="374" font-family="Arial, sans-serif" font-size="24" fill="#707070">Street: 1284 NW Example Street</text>
+  <rect x="180" y="430" width="400" height="64" rx="10" fill="#2f6f5e"/>
+  <text x="380" y="471" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">Generate New Address</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Download Success</title>
+  <desc id="desc">Clean placeholder image for successful app download.</desc>
+  <rect width="1200" height="720" fill="#f7f7f3"/>
+  <rect x="230" y="90" width="740" height="540" rx="38" fill="#ffffff" stroke="#deded6" stroke-width="3"/>
+  <circle cx="600" cy="258" r="86" fill="#2f6f5e"/>
+  <path d="M555 259l31 31 65-78" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="410" text-anchor="middle" font-family="Georgia, serif" font-size="56" font-weight="700" fill="#222222">Download Success</text>
+  <text x="600" y="466" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="#707070">Your US App Store account is ready.</text>
+</svg>
