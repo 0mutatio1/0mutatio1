@@ -14,7 +14,7 @@ category: Guides
 
 A US Apple ID gives you access to apps and services not available in regional App Stores — TikTok, ChatGPT, Shadowrocket, and many more. This guide walks through the entire process. No VPN required. No US phone number needed. No US credit card needed.
 
-![Register Apple ID](../../images/register-apple-id.svg)
+![Register Apple ID](../../images/register-apple-id.webp)
 
 ---
 
@@ -52,7 +52,7 @@ Visit the [US Tax-Free Address Generator](https://usaddressgen.com/tax-free-addr
 **Why a tax-free state?**  
 Five US states have no sales tax: **Oregon, Alaska, Delaware, Montana, and New Hampshire**. Choosing one means you won't pay tax on App Store purchases. (Alaska allows local sales taxes, so Oregon or Delaware are safer bets.)
 
-![US Tax-Free Address Generator](../../images/us-address-generator.svg)
+![US Tax-Free Address Generator](../../images/us-address-generator.webp)
 
 ---
 
@@ -68,7 +68,7 @@ Open the [Apple ID registration page](https://appleid.apple.com/account) and fil
 - **Phone Number:** Your **Chinese (or other non-US) phone number** works fine, even if it's already tied to another Apple ID
 - **Verification:** Choose SMS
 
-![Sign Up US Apple ID](../../images/signup-us-apple-id.svg)
+![Sign Up US Apple ID](../../images/signup-us-apple-id.png)
 
 ---
 
@@ -76,7 +76,7 @@ Open the [Apple ID registration page](https://appleid.apple.com/account) and fil
 
 After submitting, Apple sends verification codes to your email and phone. Enter both codes and click **Next**.
 
-![Verify Email & Phone](../../images/verify-email-phone.svg)
+![Verify Email & Phone](../../images/verify-email-phone.png)
 
 Your Apple ID is now created — but it's not fully active in the App Store yet. You still need to add a billing address.
 
@@ -89,7 +89,7 @@ Your Apple ID is now created — but it's not fully active in the App Store yet.
 3. Scroll to the bottom and tap **Sign Out**.
 4. Sign in with your newly created US Apple ID.
 
-![Sign In Apple ID](../../images/sign-in-apple-id.svg)
+![Sign In Apple ID](../../images/sign-in-apple-id.png)
 
 The store will automatically switch to the US region. Now we need to trigger the billing address prompt.
 
@@ -101,7 +101,7 @@ The store will automatically switch to the US region. Now we need to trigger the
 2. A prompt will appear: *"This Apple ID has not been used in the iTunes Store yet."* Tap **Check**.
 3. On the billing screen:
 
-![Check Apple ID](../../images/check-apple-id.svg)
+![Check Apple ID](../../images/check-apple-id.png)
 
 - **Payment Method:** **Leave this UNTOUCHED.** Do not select anything. Do not tap on it.
 - **Prefix/Salutation:** Any
@@ -112,13 +112,13 @@ The store will automatically switch to the US region. Now we need to trigger the
 - **Zip Code:** Copy from the address generator
 - **Phone:** First 3 digits = area code, remaining 7 = local number
 
-![Apple ID Billing Address](../../images/billing-address.svg)
+![Apple ID Billing Address](../../images/billing-address.webp)
 
 4. Tap **Next**.
 
 That's it. You can now download apps from the US App Store.
 
-![Download Success](../../images/download-success.svg)
+![Download Success](../../images/download-success.png)
 
 ---
 
