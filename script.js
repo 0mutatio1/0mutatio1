@@ -64,26 +64,52 @@ function postMatchesQuery(post, query) {
   return normalizeSearchText(post.title).includes(normalizedQuery);
 }
 
+function extractFencedCodeBlocks(markdown) {
+  const codeBlocks = [];
+  const text = markdown.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (_match, language, code) => {
+    const index = codeBlocks.push({ language, code: code.replace(/\n$/, "") }) - 1;
+    return `\n\n[[CODE_BLOCK_${index}]]\n\n`;
+  });
+
+  return { text, codeBlocks };
+}
+
+function plainHeadingText(value) {
+  return value.replace(/[*_`#]/g, "").trim();
+}
+
 function markdownToHtml(markdown) {
-  const blocks = markdown.trim().split(/\n{2,}/).filter(Boolean);
+  const { text, codeBlocks } = extractFencedCodeBlocks(markdown);
+  const blocks = text.trim().split(/\n{2,}/).filter(Boolean);
+  let sectionTitle = "";
 
   return blocks
     .map((block) => {
       const text = block.trim();
+      const codeBlock = text.match(/^\[\[CODE_BLOCK_(\d+)]]$/);
+
+      if (codeBlock) {
+        const { language, code } = codeBlocks[Number(codeBlock[1])];
+        const languageClass = language ? ` class="language-${escapeHtml(language)}"` : "";
+        return `<pre class="code-block"><code${languageClass}>${escapeHtml(code)}</code></pre>`;
+      }
 
       if (text.startsWith("# ")) {
         const [heading, ...rest] = text.split("\n");
+        sectionTitle = plainHeadingText(heading.slice(2));
         return `<h2>${inlineMarkdown(heading.slice(2))}</h2>${rest.length > 0 ? markdownToHtml(rest.join("\n")) : ""}`;
       }
 
       if (text.startsWith("## ")) {
         const [heading, ...rest] = text.split("\n");
+        sectionTitle = plainHeadingText(heading.slice(3));
         return `<h3>${inlineMarkdown(heading.slice(3))}</h3>${rest.length > 0 ? markdownToHtml(rest.join("\n")) : ""}`;
       }
 
       if (text.startsWith("### ")) {
         const [heading, ...rest] = text.split("\n");
-        return `<h4 class="faq-question">${inlineMarkdown(heading.slice(4))}</h4>${rest.length > 0 ? markdownToHtml(rest.join("\n")) : ""}`;
+        const className = sectionTitle.toLowerCase() === "faq" ? ' class="faq-question"' : "";
+        return `<h4${className}>${inlineMarkdown(heading.slice(4))}</h4>${rest.length > 0 ? markdownToHtml(rest.join("\n")) : ""}`;
       }
 
       if (text === "---") {
